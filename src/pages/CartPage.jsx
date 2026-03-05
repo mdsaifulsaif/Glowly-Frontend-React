@@ -7,7 +7,10 @@ const CartPage = () => {
   const { cart, addToCart, removeFromCart } = useCartStore();
 
   // সাবটোটাল ক্যালকুলেশন
-  const subtotal = cart.reduce((acc, item) => acc + item.salePrice * item.quantity, 0);
+  const subtotal = cart.reduce(
+    (acc, item) => acc + item.salePrice * item.quantity,
+    0,
+  );
   const shipping = 5.99;
   const total = subtotal + shipping;
 
@@ -23,11 +26,41 @@ const CartPage = () => {
 
   if (cart.length === 0) {
     return (
-      <div className="h-screen flex flex-col justify-center items-center gap-4">
-        <h2 className="text-2xl font-bold">আপনার কার্ট খালি!</h2>
-        <Link to="/" className="bg-black text-white px-6 py-2 rounded-full font-bold uppercase text-sm">
-          শপিং শুরু করুন
-        </Link>
+      <div className="min-h-[80vh] flex flex-col justify-center items-center bg-[#F2E6D9] px-4">
+        <div className="bg-white p-10 md:p-16 rounded-3xl shadow-sm text-center max-w-lg w-full">
+          {/* Shopping Bag Icon */}
+          <div className="bg-[#F9F9F9] w-24 h-24 rounded-full flex items-center justify-center mx-auto mb-6">
+            <svg
+              className="w-12 h-12 text-gray-300"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth="1.5"
+                d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z"
+              />
+            </svg>
+          </div>
+
+          <h2 className="text-3xl font-bold text-gray-900 mb-3 uppercase tracking-tight">
+            Your Cart is Empty
+          </h2>
+
+          <p className="text-gray-500 mb-10 text-sm leading-relaxed">
+            It looks like you haven't added anything to your cart yet. Explore
+            our collections to find your glow.
+          </p>
+
+          <Link
+            to="/"
+            className="inline-block bg-black text-white px-10 py-4 rounded-full font-bold uppercase text-xs tracking-[0.2em] hover:bg-zinc-800 transition-all shadow-lg"
+          >
+            Start Shopping
+          </Link>
+        </div>
       </div>
     );
   }
@@ -40,33 +73,52 @@ const CartPage = () => {
         {/* left item list*/}
         <div className="flex-1 space-y-8">
           {cart.map((item) => (
-            <div key={item._id} className="flex items-center gap-6 border-b border-gray-100 pb-8 relative">
+            <div
+              key={item._id}
+              className="flex items-center gap-6 border-b border-gray-100 pb-8 relative"
+            >
               <div className="w-24 h-24 bg-[#F9F9F9]  ">
-                <img src={item.thumbnail} alt={item.name} className="w-full h-full object-contain" />
+                <img
+                  src={item.thumbnail}
+                  alt={item.name}
+                  className="w-full h-full object-contain"
+                />
               </div>
-              
+
               <div className="flex-1">
                 <div className="flex justify-between items-start mb-2">
-                  <h3 className="font-bold text-lg text-gray-800">{item.name}</h3>
+                  <h3 className="font-bold text-lg text-gray-800">
+                    {item.name}
+                  </h3>
                   <p className="font-bold text-lg">${item.salePrice}</p>
                 </div>
-                
-                <p className="text-gray-400 text-sm mb-4">Quantity: {item.quantity}</p>
-                
+
+                <p className="text-gray-400 text-sm mb-4">
+                  Quantity: {item.quantity}
+                </p>
+
                 <div className="flex items-center gap-4">
                   <div className="flex items-center border border-gray-200 rounded-lg px-3 py-1 gap-4">
-                    <button onClick={() => handleQuantity(item, "dec")} className="text-gray-500 hover:text-black">
+                    <button
+                      onClick={() => handleQuantity(item, "dec")}
+                      className="text-gray-500 hover:text-black"
+                    >
                       <FaMinus size={10} />
                     </button>
-                    <span className="font-bold text-sm w-4 text-center">{item.quantity}</span>
-                    <button onClick={() => handleQuantity(item, "inc")} className="text-gray-500 hover:text-black">
+                    <span className="font-bold text-sm w-4 text-center">
+                      {item.quantity}
+                    </span>
+                    <button
+                      onClick={() => handleQuantity(item, "inc")}
+                      className="text-gray-500 hover:text-black"
+                    >
                       <FaPlus size={10} />
                     </button>
                   </div>
                 </div>
 
                 {/* ডিলিট বাটন */}
-                <button 
+                <button
                   onClick={() => removeFromCart(item._id)}
                   className="absolute right-0 bottom-8 text-red-400 hover:text-red-600 transition-colors"
                 >
@@ -76,7 +128,10 @@ const CartPage = () => {
             </div>
           ))}
 
-          <Link to="/" className="inline-block mt-8 border border-gray-200 px-8 py-3 rounded-lg font-bold text-sm hover:bg-gray-50 transition-all">
+          <Link
+            to="/"
+            className="inline-block mt-8 border border-gray-200 px-8 py-3 rounded-lg font-bold text-sm hover:bg-gray-50 transition-all"
+          >
             Continue Shopping
           </Link>
         </div>
@@ -85,7 +140,7 @@ const CartPage = () => {
         <div className="lg:w-[400px]">
           <div className="bg-[#F2E6D9] p-10 ">
             <h2 className="font-bold text-lg mb-8">Order Summary</h2>
-            
+
             <div className="space-y-4 text-gray-700 mb-8">
               <div className="flex justify-between items-center">
                 <span className="text-sm font-medium">Subtotal</span>
@@ -102,9 +157,9 @@ const CartPage = () => {
             </div>
 
             <div className="flex gap-2 mb-6">
-              <input 
-                type="text" 
-                placeholder="Promo Code" 
+              <input
+                type="text"
+                placeholder="Promo Code"
                 className="flex-1 bg-white px-4 py-3 rounded-lg text-sm focus:outline-none"
               />
               <button className="bg-white px-6 py-3 rounded-lg font-bold text-sm hover:bg-gray-100">
@@ -112,9 +167,12 @@ const CartPage = () => {
               </button>
             </div>
 
-            <button className="w-full bg-black text-white py-4 rounded-lg font-bold uppercase tracking-widest text-sm hover:bg-zinc-800 transition-all shadow-lg">
+            <Link
+              to="/checkout"
+              className="w-full px-5 bg-black text-white py-4 rounded-lg font-bold uppercase tracking-widest text-sm hover:bg-zinc-800 transition-all shadow-lg"
+            >
               Proceed to Checkout
-            </button>
+            </Link>
           </div>
         </div>
       </div>
