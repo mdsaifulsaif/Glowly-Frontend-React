@@ -32,6 +32,7 @@ const Navbar = () => {
         "Masks",
       ],
     },
+    
     {
       name: "Collections",
       sub: ["Hydration", "Brightening", "Anti-Aging", "Sensitive Skin"],

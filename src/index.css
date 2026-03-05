@@ -167,6 +167,72 @@ body {
   color: var(--accent-color);
 }
 
+
+/* Desktop/Base Styles (Tomar existing code) */
+.card-content {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.card-category {
+  font-size: 14px;
+  color: var(--text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.card-title {
+  font-weight: 600;
+  font-size: 20px;
+  color: var(--primary-color);
+}
+
+.card-price {
+  font-weight: 700;
+  font-size: 32px;
+  color: var(--primary-color);
+}
+
+.rating-container {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 14px;
+  color: var(--accent-color);
+}
+
+/* --- Mobile Responsiveness (Max-width: 768px) --- */
+@media (max-width: 768px) {
+  .card-content {
+    gap: 4px; /* Mobile a gap ektu komiye dewa */
+  }
+
+  .card-category {
+    font-size: 11px; /* 14px theke 11px */
+  }
+
+  .card-title {
+    font-size: 15px; /* 20px theke 15px */
+    line-height: 1.2;
+  }
+
+  .card-price {
+    font-size: 18px; /* 32px theke 18px (Mobile a 32px onek boro) */
+  }
+
+  .rating-container {
+    font-size: 12px; /* 14px theke 12px */
+    gap: 2px;
+  }
+
+  /* Star icon gulo jodi SVG hoy, segulao choto hobe */
+  .rating-container svg {
+    width: 12px;
+    height: 12px;
+  }
+}
+
 /* product grid  */
 
 .product-grid {
