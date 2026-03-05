@@ -5,6 +5,8 @@ import Register from "../pages/register";
 import Login from "../pages/login";
 import About from "../pages/About";
 import Shop from "../pages/Shop";
+import ProductDetails from "../pages/ProductDetails";
+import CartPage from "../pages/CartPage";
 
 
 export const router = createBrowserRouter([
@@ -28,10 +30,19 @@ export const router = createBrowserRouter([
         path: "/login",
         element: <Login />,
       },
-   {
+       {
         path: "/shop",
         element: <Shop />,
       },
+        {
+        path: "/Product/:id",
+        element: <ProductDetails />,
+      },
+        {
+        path: "/cart",
+        element: <CartPage />
+      },
+      
     ],
   },
 ]);

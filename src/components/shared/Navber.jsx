@@ -9,16 +9,19 @@ import {
 import { motion, AnimatePresence } from "framer-motion";
 import { Link } from "react-router";
 import { useAuth } from "../../contexts/AuthContext";
+import { useCartStore } from "../../store/useCartStore";
 
 const Navbar = () => {
   const { user, loginUser, logoutUser } = useAuth();
+  const cart = useCartStore((state) => state.cart);
+  const totalItems = cart.reduce((total, item) => total + item.quantity, 0);
+  console.log("total card items",totalItems)
+
   console.log("current logged user:", user);
   const [isSearchOpen, setIsSearchOpen] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [activeDropdown, setActiveDropdown] = useState(null);
   const [isLoggedIn, setIsLoggedIn] = useState(false);
-
-  
 
   const menuItems = [
     {
@@ -32,7 +35,7 @@ const Navbar = () => {
         "Masks",
       ],
     },
-    
+
     {
       name: "Collections",
       sub: ["Hydration", "Brightening", "Anti-Aging", "Sensitive Skin"],
@@ -152,7 +155,7 @@ const Navbar = () => {
           <div className="relative group">
             <IoPersonOutline className="text-xl cursor-pointer hover:scale-110 transition-transform" />
             <div className="absolute right-0 top-full mt-4 w-40 bg-white shadow-2xl border border-gray-100 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-300 py-2 text-[13px] rounded-sm">
-              {!user? (
+              {!user ? (
                 <>
                   <Link
                     to="/register"
@@ -175,7 +178,10 @@ const Navbar = () => {
                   >
                     My Account
                   </a>
-                  <button   onClick={logoutUser} className="w-full text-left px-4 py-2 text-red-500 hover:bg-red-50">
+                  <button
+                    onClick={logoutUser}
+                    className="w-full text-left px-4 py-2 text-red-500 hover:bg-red-50"
+                  >
                     Log Out
                   </button>
                 </>
@@ -184,14 +190,12 @@ const Navbar = () => {
           </div>
 
           {/* Cart */}
-          <a href="/cart" className="relative">
+          <Link to="/cart" className="relative">
             <IoBagHandleOutline className="text-xl cursor-pointer hover:scale-110 transition-transform" />
             <span className="absolute -top-2 -right-2 bg-black text-white text-[10px] w-4 h-4 rounded-full flex items-center justify-center">
-              0
+              {totalItems || 0 }
             </span>
-          </a>
-
-         
+          </Link>
         </div>
       </div>
 
