@@ -6,6 +6,7 @@ import BestSellers from '../components/BestSellers';
 import CategorySection from '../components/CategorySection';
 import NewArrivals from '../components/NewArrivals';
 import SkincarePhilosophy from '../components/SkincarePhilosophy';
+import TestimonialSection from '../components/TestimonialSection';
 
 function Home() {
     const { setUser } = useAuth();
@@ -17,6 +18,7 @@ function Home() {
         <CategorySection />
         <NewArrivals />
         <SkincarePhilosophy />
+        <TestimonialSection />
         <Newsletter />
     </div>
   )
