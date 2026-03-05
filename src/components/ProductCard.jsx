@@ -1,0 +1,50 @@
+import React from "react";
+import { motion, AnimatePresence } from "framer-motion";
+import { IoBagHandleOutline } from "react-icons/io5";
+
+const ProductCard = ({ product }) => {
+  return (
+    <div className="product-card group cursor-pointer">
+      {/* Image Wrapper */}
+      <div className="card-image-wrapper relative overflow-hidden bg-[#F5F5F5]">
+        <img
+          src={product.image}
+          alt={product.title}
+          className="card-image transition-transform duration-700 group-hover:scale-110"
+        />
+        
+        {/* Hover "Add to Cart" Button */}
+        <AnimatePresence>
+          <div className="absolute inset-0 flex items-center justify-center bg-black/5 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+            <motion.button
+              initial={{ y: 20, opacity: 0 }}
+              whileHover={{ scale: 1.05 }}
+              whileTap={{ scale: 0.95 }}
+              animate={{ y: 0, opacity: 1 }}
+              className="bg-white text-black px-6 py-3 rounded-md flex items-center gap-2 font-semibold shadow-lg text-sm"
+            >
+              <IoBagHandleOutline size={18} />
+              Add to Cart
+            </motion.button>
+          </div>
+        </AnimatePresence>
+      </div>
+
+      {/* Content Section */}
+      <div className="card-content pt-2">
+        <span className="card-category text-gray-500">{product.category}</span>
+        <h3 className="card-title text-gray-800">{product.title}</h3>
+        <p className="card-price font-bold">${product.price}</p>
+        
+        {/* Rating Section */}
+        <div className="rating-container flex items-center gap-1 mt-1">
+          <span className="text-sm font-medium">{product.rating}</span>
+          <span className="text-yellow-500">★</span>
+          <span className="text-gray-400 text-xs">({product.reviews})</span>
+        </div>
+      </div>
+    </div>
+  );
+};
+
+export default ProductCard;

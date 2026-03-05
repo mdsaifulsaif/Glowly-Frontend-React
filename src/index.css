@@ -48,6 +48,7 @@ body {
   align-items: center;
   justify-content: center;
   padding: 16px 32px;
+  gap: 10px;
   font-size: 16px;
   font-weight: 500;
   border-radius: 100px;
@@ -66,7 +67,7 @@ body {
   text-transform: uppercase;
   letter-spacing: 0.1em; /* Tracking wide */
   border-radius: 100px;
-  
+
   cursor: pointer;
   transition: var(--transition);
   display: inline-flex;
@@ -97,7 +98,6 @@ body {
     4px
   ); /* Image er opore thakle glassmorphism feel dibe */
 }
-
 
 /* --- Product Card (Next.js Component Ready) --- */
 .product-grid {
@@ -165,4 +165,37 @@ body {
   gap: 4px;
   font-size: 14px;
   color: var(--accent-color);
+}
+
+/* product grid  */
+
+.product-grid {
+  display: grid;
+  /* repeat(4, 1fr) use korle 4 ta card perfectly align hobe desktop e */
+  grid-template-columns: repeat(1, 1fr);
+  gap: 30px;
+  width: 100%;
+}
+
+/* Tablet e 2 column */
+@media (min-width: 640px) {
+  .product-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+/* Desktop e 4 column - Alignment perfectly matching title */
+@media (min-width: 1024px) {
+  .product-grid {
+    grid-template-columns: repeat(4, 1fr);
+    gap: 24px; /* Gap adjust koro jate edge mile thake */
+  }
+}
+
+.product-card {
+  width: 100%; /* Card jate pura grid column er space ney */
+  max-width: none; /* Max-width remove koro alignment fix korte */
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
 }
