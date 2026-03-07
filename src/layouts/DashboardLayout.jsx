@@ -23,10 +23,10 @@ const DashboardLayout = () => {
   console.log("admin", user);
 
   const menuItems = [
-    { name: "Products", icon: <IoCubeOutline />, path: "/products" },
-    { name: "Orders", icon: <IoCartOutline />, path: "/orders" },
-    { name: "Customers", icon: <IoPeopleOutline />, path: "/customers" },
-    { name: "Settings", icon: <IoSettingsOutline />, path: "/settings" },
+    { name: "Products", icon: <IoCubeOutline />, path: "/dashboard/products" },
+    { name: "Orders", icon: <IoCartOutline />, path: "/dashboard/orders" },
+    { name: "Customers", icon: <IoPeopleOutline />, path: "/dashboard/customers" },
+    { name: "Settings", icon: <IoSettingsOutline />, path: "/dashboard/settings" },
   ];
 
   const handleLogout = async () => {

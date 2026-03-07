@@ -1,18 +1,37 @@
 import React, { useState } from "react";
 import { motion } from "framer-motion";
+import axios from "axios";
+import toast from "react-hot-toast";
+import { BASE_URL } from "../helper/config";
+
 
 const Newsletter = () => {
   const [email, setEmail] = useState("");
+  const [loading, setLoading] = useState(false);
 
-  const handleSubscribe = (e) => {
+  const handleSubscribe = async (e) => {
     e.preventDefault();
-    console.log("Subscribed with:", email);
-    // Add your API call here
+    setLoading(true);
+
+    try {
+      const res = await axios.post(`${BASE_URL}/subscribe`, { email });
+
+      if (res.data.success) {
+        toast.success(res.data.message || "Subscribed successfully!");
+        setEmail(""); 
+      }
+    } catch (err) {
+     
+      const errorMessage =
+        err.response?.data?.message || "Something went wrong!";
+      toast.error(errorMessage);
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
     <section className="bg-white py-16 md:py-24">
-      {/* Tomar professional global-container class */}
       <div className="global-container">
         <div className="flex flex-col items-center text-center max-w-[800px] mx-auto">
           {/* Section Header */}
@@ -53,16 +72,17 @@ const Newsletter = () => {
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 required
-                className="w-full px-6 py-4 rounded-full border border-gray-200 text-sm focus:outline-none focus:border-gray-400 transition-all placeholder:text-gray-400"
+                disabled={loading}
+                className="w-full px-6 py-4 rounded-full border border-gray-200 text-sm focus:outline-none focus:border-gray-400 transition-all placeholder:text-gray-400 disabled:bg-gray-50"
               />
             </div>
 
-            {/* Same color as image #D1A0B0 (Pinkish Rose) */}
             <button
               type="submit"
-              className="bg-[#D1A0B0] text-white px-10 py-4 rounded-full text-sm font-semibold hover:bg-[#c48e9f] transition-all w-full sm:w-auto whitespace-nowrap"
+              disabled={loading}
+              className="bg-[#D1A0B0] text-white px-10 py-4 rounded-full text-sm font-semibold hover:bg-[#c48e9f] transition-all w-full sm:w-auto whitespace-nowrap disabled:opacity-70 disabled:cursor-not-allowed"
             >
-              Subscribe
+              {loading ? "Sending..." : "Subscribe"}
             </button>
           </motion.form>
         </div>

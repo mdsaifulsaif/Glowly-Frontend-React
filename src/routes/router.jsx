@@ -13,6 +13,8 @@ import MyAccountPage from "../pages/MyAccountPage";
 import DashboardLayout from "../layouts/DashboardLayout";
 import DashboardOverview from "../dasboardPages/DashboardOverview";
 import ProductPage from "../dasboardPages/ProductPage";
+import OrderPage from "../dasboardPages/OrderPage";
+import NotFound from "../components/NotFound";
 
 export const router = createBrowserRouter([
   {
@@ -75,7 +77,11 @@ export const router = createBrowserRouter([
       },
       {
         path: "orders",
-        element: <div>Orders Page Content</div>,
+        element: <OrderPage />,
+      },
+      {
+        path: "*", 
+        element: <NotFound />,
       },
     ],
   },
