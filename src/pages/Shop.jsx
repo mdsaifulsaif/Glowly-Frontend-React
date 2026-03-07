@@ -1,7 +1,10 @@
+
+
 import React, { useEffect, useState, useMemo } from "react";
 import axios from "axios";
 import { BASE_URL } from "../helper/config";
 import ProductCard from "../components/ProductCard";
+import { IoBagHandleOutline } from "react-icons/io5";
 
 const Shop = () => {
   const [allProducts, setAllProducts] = useState([]);
@@ -65,7 +68,7 @@ const Shop = () => {
   }, [activeCategory, sortOption, allProducts]);
 
   return (
-    <div className="bg-white min-h-screen pb-20">
+    <div className="bg-white min-h-screen pb-20 ">
       {/* Category & Sort Header */}
       <div className="bg-[#F9E4CB] py-4 border-b border-[#e5d8cb]">
         <div className="container mx-auto px-4 lg:px-0 flex flex-wrap items-center justify-between gap-6">
@@ -106,32 +109,21 @@ const Shop = () => {
         </div>
       </div>
 
-      {/* Product Grid */}
-      <div className="container mx-auto px-4 lg:px-0 mt-12">
+      {/* Product Grid Section */}
+      <div className="container mx-auto px-4 lg:px-0 mt-12 ">
         {loading ? (
-          <div className="h-96 flex justify-center items-center font-medium text-gray-400">
+          <div className="h-96 flex justify-center items-center font-medium text-gray-400 italic tracking-widest">
             Loading products...
           </div>
-        ) : (
+        ) : displayProducts.length > 0 ? (
           <>
             <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-x-6 gap-y-12">
               {displayProducts.map((product) => (
-                <ProductCard
-                  key={product._id}
-                  product={{
-                    id: product._id,
-                    image: product.thumbnail,
-                    category: product.categoryID?.name,
-                    title: product.name,
-                    price: product.salePrice,
-                    rating: 4.9,
-                    reviews: 124,
-                  }}
-                />
+                <ProductCard key={product._id} product={product} />
               ))}
             </div>
 
-            {/* Pagination Logic: 1 er beshi page thakle dekhabe */}
+            {/* Pagination Logic */}
             {totalPages > 1 && (
               <div className="mt-20 flex justify-center items-center gap-2">
                 <button
@@ -168,6 +160,29 @@ const Shop = () => {
               </div>
             )}
           </>
+        ) : (
+          /* Empty State - Jokhon kono product thakbe na */
+          <div className="h-96 flex flex-col justify-center items-center text-center px-4">
+            <div className="bg-gray-50 p-6 rounded-full mb-4">
+              <IoBagHandleOutline size={40} className="text-gray-300" />
+            </div>
+            <h3 className="text-xl font-bold text-gray-800 mb-2 uppercase tracking-widest">
+              No Products Found
+            </h3>
+            <p className="text-gray-500 text-sm max-w-xs mx-auto">
+              We couldn't find any products in the{" "}
+              <span className="font-bold text-black italic">
+                "{activeCategory}"
+              </span>{" "}
+              category at the moment. Please try another filter.
+            </p>
+            <button
+              onClick={() => setActiveCategory("All Product")}
+              className="mt-6 text-[11px] font-bold uppercase tracking-[0.2em] border-b-2 border-black pb-1 hover:text-gray-500 hover:border-gray-500 transition-all"
+            >
+              Show All Products
+            </button>
+          </div>
         )}
       </div>
     </div>

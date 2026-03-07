@@ -1,13 +1,18 @@
 import React, { useState } from "react";
 import axios from "axios";
-import { Link, Links } from "react-router";
+import { Link, useNavigate } from "react-router";
 import { BASE_URL } from "../helper/config";
 import toast from "react-hot-toast";
+import { useAuth } from "../contexts/AuthContext";
 
 const Register = () => {
+  const navigate = useNavigate();
+  const { loginUser } = useAuth();
+
   // Form State
   const [formData, setFormData] = useState({
-    name: "",
+    firstName: "",
+    lastName: "",
     email: "",
     password: "",
     confirmPassword: "",
@@ -23,55 +28,68 @@ const Register = () => {
     }));
   };
 
-  // Axios API Call
+  // const handleSubmit = async (e) => {
+  //   e.preventDefault();
 
+  //   if (formData.password !== formData.confirmPassword) {
+  //     return toast.error("Passwords do not match!");
+  //   }
 
-  // ... existing code
+  //   const loadId = toast.loading("Creating your account...");
 
+  //   try {
+  //     const response = await axios.post(`${BASE_URL}/auth/register`, formData, {
+  //       withCredentials: true,
+  //     });
+
+  //     if (response.data.success) {
+  //       toast.success("Account Created Successfully! ", { id: loadId });
+
+  //       setTimeout(() => navigate("/"), 2000);
+  //     }
+  //   } catch (error) {
+  //     const errorMessage = error.response?.data?.message || "Something went wrong!";
+  //     toast.error(errorMessage, { id: loadId });
+  //   }
+  // };
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    // Password matching check (Optional but good)
     if (formData.password !== formData.confirmPassword) {
       return toast.error("Passwords do not match!");
     }
 
-    const loadId = toast.loading("Creating your account..."); // Loading state
+    const loadId = toast.loading("Creating your account...");
 
     try {
       const response = await axios.post(`${BASE_URL}/auth/register`, formData, {
-        withCredentials: true,
+        withCredentials: true, // এটি অত্যন্ত গুরুত্বপূর্ণ কুকি সেট করার জন্য
       });
 
-      console.log("API Response:", response.data);
+      if (response.data.success) {
+        // কনটেক্সটে ইউজার ডাটা সেট করা
+        // নিশ্চিত করো ব্যাকএন্ড থেকে response.data.data তে ইউজার অবজেক্ট আসছে
+        loginUser(response.data.data);
 
-      // Success Toast
-      toast.update(loadId, {
-        render: "Account Created Successfully! ",
-        type: "success",
-        isLoading: false,
-        autoClose: 3000,
-      });
+        toast.success("Welcome! Account created successfully.", { id: loadId });
+
+        
+        if (response.data.data.role === "admin") {
+          navigate("/dashboard");
+        } else {
+          navigate("/");
+        }
+      }
     } catch (error) {
-      toast.error("Error calling API:", error.message);
-
-      // Error Message Backend theke anar chesta koro
       const errorMessage =
-        error.response?.data?.message || "Something went wrong!";
-
-      // Error Toast
-      toast.update(loadId, {
-        render: errorMessage,
-        type: "error",
-        isLoading: false,
-        autoClose: 3000,
-      });
+        error.response?.data?.message || "Registration failed!";
+      toast.error(errorMessage, { id: loadId });
     }
   };
 
   return (
     <div className="min-h-screen bg-[#F9E4CB] flex flex-col items-center justify-center py-12 px-4 font-raleway">
-      <div className="global-container max-w-[500px]">
+      <div className="global-container max-w-[500px] w-full">
         {/* Header Section */}
         <div className="text-center mb-8">
           <h1 className="text-3xl md:text-4xl font-normal text-gray-800 mb-2">
@@ -92,19 +110,36 @@ const Register = () => {
         {/* Form Card */}
         <div className="bg-white p-8 md:p-10 shadow-sm rounded-sm">
           <form onSubmit={handleSubmit} className="flex flex-col gap-5">
-            {/* Full Name */}
-            <div className="flex flex-col gap-2">
-              <label className="text-[11px] uppercase tracking-widest text-gray-500 font-semibold">
-                Full name
-              </label>
-              <input
-                type="text"
-                name="name"
-                value={formData.name}
-                onChange={handleChange}
-                className="w-full border border-gray-300 p-3 text-sm focus:outline-none focus:border-black transition-colors"
-                required
-              />
+            {/* First Name & Last Name (Grid Layout) */}
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div className="flex flex-col gap-2">
+                <label className="text-[11px] uppercase tracking-widest text-gray-500 font-semibold">
+                  First name
+                </label>
+                <input
+                  type="text"
+                  name="firstName"
+                  value={formData.firstName}
+                  onChange={handleChange}
+                  className="w-full border border-gray-300 p-3 text-sm focus:outline-none focus:border-black transition-colors"
+                  placeholder="John"
+                  required
+                />
+              </div>
+              <div className="flex flex-col gap-2">
+                <label className="text-[11px] uppercase tracking-widest text-gray-500 font-semibold">
+                  Last name
+                </label>
+                <input
+                  type="text"
+                  name="lastName"
+                  value={formData.lastName}
+                  onChange={handleChange}
+                  className="w-full border border-gray-300 p-3 text-sm focus:outline-none focus:border-black transition-colors"
+                  placeholder="Doe"
+                  required
+                />
+              </div>
             </div>
 
             {/* Email Address */}

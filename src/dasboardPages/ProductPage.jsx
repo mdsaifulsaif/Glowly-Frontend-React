@@ -1,4 +1,6 @@
-import React, { useEffect, useState, useRef } from "react";
+
+
+import React, { useEffect, useState } from "react";
 import axios from "axios";
 import {
   IoSearchOutline,
@@ -13,7 +15,6 @@ import {
 } from "react-icons/io5";
 import { FiChevronLeft, FiChevronRight } from "react-icons/fi";
 import { BASE_URL } from "../helper/config";
-import toast from "react-hot-toast";
 import { useProductStore } from "../store/useProductStore";
 import AddProductModal from "../components/modals/AddProductModal";
 import Swal from "sweetalert2";
@@ -27,11 +28,10 @@ const ProductPage = () => {
   const [totalProducts, setTotalProducts] = useState(0);
   const [searchTerm, setSearchTerm] = useState("");
   const [selectedCategory, setSelectedCategory] = useState("");
-  const [activeMenu, setActiveMenu] = useState(null); 
+  const [activeMenu, setActiveMenu] = useState(null);
 
   const { openModal } = useProductStore();
 
-  
   const fetchProducts = async () => {
     try {
       setLoading(true);
@@ -50,7 +50,6 @@ const ProductPage = () => {
     }
   };
 
-  // category fetch
   const fetchCategories = async () => {
     try {
       const response = await axios.get(`${BASE_URL}/categories`);
@@ -61,51 +60,36 @@ const ProductPage = () => {
   };
 
   const handleDelete = async (id) => {
-    // SweetAlert2 set
     Swal.fire({
       title: "Are you sure?",
       text: "You won't be able to revert this!",
       icon: "warning",
       showCancelButton: true,
-      confirmButtonColor: "#000000", 
+      confirmButtonColor: "#000",
       cancelButtonColor: "#d33",
       confirmButtonText: "Yes, delete it!",
-      padding: "2em",
-      customClass: {
-        popup: "rounded-2xl", 
-        confirmButton: "rounded-lg px-5 py-2.5",
-        cancelButton: "rounded-lg px-5 py-2.5",
-      },
+      customClass: { popup: "rounded-2xl" },
     }).then(async (result) => {
       if (result.isConfirmed) {
         try {
           const response = await axios.delete(
             `${BASE_URL}/product-delete/${id}`,
-            {
-              withCredentials: true,
-            },
+            { withCredentials: true },
           );
-
           if (response.data.success) {
-            
             Swal.fire({
               title: "Deleted!",
-              text: "Your product has been deleted.",
               icon: "success",
               timer: 1500,
               showConfirmButton: false,
-              customClass: {
-                popup: "rounded-2xl",
-              },
             });
-            fetchProducts(); 
+            fetchProducts();
           }
         } catch (error) {
           Swal.fire({
             title: "Error!",
-            text: "Something went wrong while deleting.",
+            text: "Something went wrong.",
             icon: "error",
-            confirmButtonColor: "#000",
           });
         }
       }
@@ -118,47 +102,44 @@ const ProductPage = () => {
   }, [currentPage, searchTerm, selectedCategory]);
 
   const getStatusBadge = (stock) => {
+    const style =
+      "text-[10px] px-2 py-1 rounded-full font-bold uppercase whitespace-nowrap";
     if (stock === 0)
       return (
-        <span className="text-[10px] px-2 py-1 bg-red-50 text-red-600 rounded-full font-bold uppercase">
-          Out of Stock
-        </span>
+        <span className={`${style} bg-red-50 text-red-600`}>Out of Stock</span>
       );
     if (stock < 10)
       return (
-        <span className="text-[10px] px-2 py-1 bg-yellow-50 text-yellow-600 rounded-full font-bold uppercase">
+        <span className={`${style} bg-yellow-50 text-yellow-600`}>
           Low Stock
         </span>
       );
     return (
-      <span className="text-[10px] px-2 py-1 bg-green-50 text-green-600 rounded-full font-bold uppercase">
-        Active
-      </span>
+      <span className={`${style} bg-green-50 text-green-600`}>Active</span>
     );
   };
 
   return (
     <div
-      className="space-y-6 font-sans pb-10"
+      className="space-y-6 font-sans pb-10 w-full"
       onClick={() => setActiveMenu(null)}
     >
       <AddProductModal
         categories={categories}
         refreshProducts={fetchProducts}
       />
-      {/* Header */}
-      <div className="flex justify-between items-center">
+
+      <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
         <h2 className="text-xl font-bold text-gray-800">Manage Products</h2>
         <button
           onClick={openModal}
-          className="bg-black text-white px-4 py-2 rounded-lg flex items-center gap-2 text-sm font-medium hover:bg-gray-800 transition-all"
+          className="w-full sm:w-auto bg-black text-white px-4 py-2 rounded-lg flex items-center justify-center gap-2 text-sm"
         >
           <IoAdd className="text-xl" /> Add Product
         </button>
       </div>
 
-      {/* Stats Cards - Real Data */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 md:gap-6">
         <StatCard
           label="Total Products"
           value={totalProducts}
@@ -181,38 +162,34 @@ const ProductPage = () => {
         />
       </div>
 
-      {/* Filter & Search */}
-      <div className="bg-white p-4 rounded-xl border border-gray-100 shadow-sm flex flex-wrap gap-4 items-center justify-between">
-        <div className="relative w-full max-w-md">
+      <div className="bg-white p-4 rounded-xl border border-gray-100 shadow-sm flex flex-col lg:flex-row gap-4 justify-between">
+        <div className="relative w-full lg:max-w-md">
           <IoSearchOutline className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 text-lg" />
           <input
             type="text"
             placeholder="Search products..."
             value={searchTerm}
+            className="w-full pl-10 pr-4 py-2 bg-gray-50 rounded-lg text-sm outline-none"
             onChange={(e) => setSearchTerm(e.target.value)}
-            className="w-full pl-10 pr-4 py-2 bg-gray-50 border border-transparent rounded-lg text-sm focus:bg-white focus:border-gray-200 outline-none transition-all"
           />
         </div>
-        <div className="flex gap-4">
-          <select
-            value={selectedCategory}
-            onChange={(e) => setSelectedCategory(e.target.value)}
-            className="bg-white border border-gray-100 rounded-lg px-4 py-2 text-sm text-gray-600 outline-none cursor-pointer"
-          >
-            <option value="">All Categories</option>
-            {categories.map((cat) => (
-              <option key={cat._id} value={cat._id}>
-                {cat.name}
-              </option>
-            ))}
-          </select>
-        </div>
+        <select
+          value={selectedCategory}
+          onChange={(e) => setSelectedCategory(e.target.value)}
+          className="w-full lg:w-auto bg-white border border-gray-100 rounded-lg px-4 py-2 text-sm outline-none"
+        >
+          <option value="">All Categories</option>
+          {categories.map((cat) => (
+            <option key={cat._id} value={cat._id}>
+              {cat.name}
+            </option>
+          ))}
+        </select>
       </div>
 
-      {/* Product Table */}
       <div className="bg-white rounded-xl border border-gray-100 shadow-sm overflow-hidden min-h-[400px]">
-        <div className="overflow-x-auto">
-          <table className="w-full text-left">
+        <div className="overflow-x-auto w-full">
+          <table className="w-full text-left min-w-[800px]">
             <thead>
               <tr className="border-b border-gray-50 text-[10px] uppercase font-bold text-gray-400 tracking-widest">
                 <th className="px-6 py-4">Thumbnails</th>
@@ -233,15 +210,12 @@ const ProductPage = () => {
                 </tr>
               ) : (
                 products.map((product) => (
-                  <tr
-                    key={product._id}
-                    className="hover:bg-gray-50/50 transition-colors group"
-                  >
+                  <tr key={product._id} className="hover:bg-gray-50/50">
                     <td className="px-6 py-4">
                       <img
                         src={product.thumbnail}
+                        className="w-12 h-12 rounded-lg object-cover "
                         alt=""
-                        className="w-12 h-12 rounded-lg object-cover bg-gray-50 border border-gray-100"
                       />
                     </td>
                     <td className="px-6 py-4 text-sm font-bold text-gray-800">
@@ -267,20 +241,18 @@ const ProductPage = () => {
                             activeMenu === product._id ? null : product._id,
                           );
                         }}
-                        className="text-gray-400 hover:text-black transition-colors p-2 rounded-full hover:bg-gray-100"
+                        className="p-2 hover:bg-gray-100 rounded-full"
                       >
-                        <IoEllipsisHorizontal className="text-xl" />
+                        <IoEllipsisHorizontal />
                       </button>
-
-                      {/* Action Dropdown Menu */}
                       {activeMenu === product._id && (
-                        <div className="absolute right-10 top-12 w-32 bg-white border border-gray-100 shadow-xl rounded-lg z-50 overflow-hidden">
-                          <button className="w-full px-4 py-2 text-left text-xs font-medium text-gray-600 hover:bg-gray-50 flex items-center gap-2">
+                        <div className="absolute right-6 top-12 w-32 bg-white  shadow-xl rounded-lg z-50">
+                          <button className="w-full px-4 py-2 text-left text-xs flex items-center gap-2 hover:bg-gray-50">
                             <IoPencilOutline /> Edit
                           </button>
                           <button
                             onClick={() => handleDelete(product._id)}
-                            className="w-full px-4 py-2 text-left text-xs font-medium text-red-500 hover:bg-red-50 flex items-center gap-2"
+                            className="w-full px-4 py-2 text-left text-xs text-red-500 flex items-center gap-2 hover:bg-red-50"
                           >
                             <IoTrashOutline /> Delete
                           </button>
@@ -294,34 +266,33 @@ const ProductPage = () => {
           </table>
         </div>
 
-        {/* Pagination */}
-        <div className="p-6 border-t border-gray-50 flex items-center justify-between">
+        <div className="p-6 border-t border-gray-50 flex flex-col sm:flex-row items-center justify-between gap-4">
           <p className="text-xs text-gray-400">
-            Showing{" "}
-            <span className="font-bold text-gray-800">{products.length}</span>{" "}
-            of <span className="font-bold text-gray-800">{totalProducts}</span>
+            Showing {products.length} of {totalProducts}
           </p>
-          <div className="flex items-center gap-2">
+          <div className="flex items-center gap-2 overflow-x-auto max-w-full pb-1">
             <button
               disabled={currentPage === 1}
               onClick={() => setCurrentPage((p) => p - 1)}
-              className="p-2 border border-gray-100 rounded-lg text-gray-400 hover:bg-gray-50 disabled:opacity-30"
+              className="p-2 border rounded-lg disabled:opacity-30"
             >
               <FiChevronLeft />
             </button>
-            {[...Array(totalPages)].map((_, i) => (
-              <button
-                key={i}
-                onClick={() => setCurrentPage(i + 1)}
-                className={`w-8 h-8 rounded-lg text-xs font-bold ${currentPage === i + 1 ? "bg-[#F3E8EC] text-[#8B3D52]" : "text-gray-400 hover:bg-gray-50"}`}
-              >
-                {i + 1}
-              </button>
-            ))}
+            <div className="flex gap-1">
+              {[...Array(totalPages)].map((_, i) => (
+                <button
+                  key={i}
+                  onClick={() => setCurrentPage(i + 1)}
+                  className={`w-8 h-8 rounded-lg text-xs font-bold ${currentPage === i + 1 ? "bg-[#F3E8EC] text-[#8B3D52]" : "text-gray-400"}`}
+                >
+                  {i + 1}
+                </button>
+              ))}
+            </div>
             <button
               disabled={currentPage === totalPages}
               onClick={() => setCurrentPage((p) => p + 1)}
-              className="p-2 border border-gray-100 rounded-lg text-gray-400 hover:bg-gray-50 disabled:opacity-30"
+              className="p-2 border rounded-lg disabled:opacity-30"
             >
               <FiChevronRight />
             </button>
@@ -333,12 +304,12 @@ const ProductPage = () => {
 };
 
 const StatCard = ({ label, value, icon }) => (
-  <div className="bg-white p-6 rounded-xl border border-gray-100 shadow-sm flex flex-col gap-4">
+  <div className="bg-white p-6 rounded-xl border border-gray-100 shadow-sm flex flex-col gap-4 w-full">
     <div className="flex justify-between items-center text-gray-400">
       <p className="text-[10px] font-bold uppercase tracking-wider">{label}</p>
       <span className="text-xl">{icon}</span>
     </div>
-    <h3 className="text-3xl font-bold text-gray-800">{value}</h3>
+    <h3 className="text-2xl font-bold text-gray-800">{value}</h3>
   </div>
 );
 

@@ -1,10 +1,12 @@
+
+
 import React, { useState } from "react";
 import { useProductStore } from "../../store/useProductStore";
 import {
   IoCloseOutline,
   IoCloudUploadOutline,
   IoTrashOutline,
-  IoAdd
+  IoAdd,
 } from "react-icons/io5";
 import axios from "axios";
 import toast from "react-hot-toast";
@@ -14,7 +16,6 @@ const AddProductModal = ({ categories, refreshProducts }) => {
   const { isModalOpen, closeModal } = useProductStore();
   const [loading, setLoading] = useState(false);
 
-
   const [previews, setPreviews] = useState({
     thumbnail: null,
     gallery: [],
@@ -23,8 +24,8 @@ const AddProductModal = ({ categories, refreshProducts }) => {
   const [formData, setFormData] = useState({
     name: "",
     description: "",
-    regularPrice: "",
     salePrice: "",
+    costPrice: "",
     categoryID: "",
     stock: "",
     thumbnail: null,
@@ -33,7 +34,7 @@ const AddProductModal = ({ categories, refreshProducts }) => {
 
   if (!isModalOpen) return null;
 
-// thumbnail handeler 
+  // thumbnail handler
   const handleThumbnailChange = (e) => {
     const file = e.target.files[0];
     if (file) {
@@ -42,7 +43,7 @@ const AddProductModal = ({ categories, refreshProducts }) => {
     }
   };
 
-//   gallery handler 
+  // gallery handler
   const handleGalleryChange = (e) => {
     const files = Array.from(e.target.files);
     setFormData({ ...formData, images: [...formData.images, ...files] });
@@ -85,7 +86,7 @@ const AddProductModal = ({ categories, refreshProducts }) => {
 
   return (
     <div className="fixed inset-0 z-[100] flex items-center justify-center bg-black/40 backdrop-blur-sm p-2 sm:p-4">
-      <div className="bg-white w-full max-w-2xl rounded-2xl shadow-2xl overflow-hidden animate-in fade-in zoom-in duration-200 flex flex-col max-h-[95vh]">
+      <div className="bg-white w-full max-w-2xl  shadow-2xl overflow-hidden animate-in fade-in zoom-in duration-200 flex flex-col max-h-[95vh]">
         {/* Header */}
         <div className="flex justify-between items-center p-4 sm:p-6 border-b bg-white sticky top-0 z-10">
           <div>
@@ -159,19 +160,21 @@ const AddProductModal = ({ categories, refreshProducts }) => {
           </div>
 
           <div className="grid grid-cols-2 gap-4">
+            {/* Cost Price */}
             <div className="space-y-1">
               <label className="text-[11px] font-bold text-gray-700 uppercase tracking-tight">
-                Regular Price ($)
+                Cost Price ($)
               </label>
               <input
                 required
                 type="number"
                 className="w-full p-3 bg-gray-50 border border-gray-100 rounded-xl outline-none text-sm"
                 onChange={(e) =>
-                  setFormData({ ...formData, regularPrice: e.target.value })
+                  setFormData({ ...formData, costPrice: e.target.value })
                 }
               />
             </div>
+            {/* Sale Price */}
             <div className="space-y-1">
               <label className="text-[11px] font-bold text-gray-700 uppercase tracking-tight">
                 Sale Price ($)

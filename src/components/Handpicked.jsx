@@ -5,7 +5,7 @@ import { CgArrowLongRight } from "react-icons/cg";
 import ProductCard from "./ProductCard";
 import { BASE_URL } from "../helper/config";
 
-function NewArrivals() {
+function Handpicked() {
   const [products, setProducts] = useState([]);
   const [loading, setLoading] = useState(true);
 
@@ -49,7 +49,7 @@ function NewArrivals() {
         {/* Header Section - Perfectly Aligned with Title */}
         <div className="flex items-center justify-between mb-10">
           <h2 className="section-title text-2xl md:text-4xl font-bold">
-            New Arrivals
+            Hand picked for you
           </h2>
           <Link
             to="/shop"
@@ -77,4 +77,4 @@ function NewArrivals() {
   );
 }
 
-export default NewArrivals;
+export default Handpicked;

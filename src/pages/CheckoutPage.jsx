@@ -44,12 +44,18 @@ const CheckoutPage = () => {
     }));
 
     try {
-      const res = await axios.post(`${BASE_URL}/order-create`, {
-        ...formData,
-        shippingMethod: shippingCost.toString(),
-        totalAmount: `$${totalAmount}`,
-        cartItems,
-      });
+      const res = await axios.post(
+        `${BASE_URL}/order-create`,
+        {
+          ...formData,
+          shippingMethod: shippingCost.toString(),
+          totalAmount: `$${totalAmount}`,
+          cartItems,
+        },
+        {
+          withCredentials: true,
+        },
+      );
       if (res.data) {
         clearCart();
         setIsSuccess(true);
@@ -248,7 +254,7 @@ const CheckoutPage = () => {
                   type="submit"
                   className="bg-black text-white px-10 py-3 rounded-md font-bold text-xs uppercase tracking-widest flex items-center gap-2 hover:opacity-90"
                 >
-                  Payment <span>›</span>
+                  Order <span>›</span>
                 </button>
               </div>
             </form>

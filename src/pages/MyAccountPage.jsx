@@ -1,5 +1,3 @@
-
-
 import React, { useState, useEffect } from "react";
 import {
   IoPersonOutline,
@@ -9,11 +7,14 @@ import {
 import axios from "axios";
 import toast from "react-hot-toast";
 import { BASE_URL } from "../helper/config";
+import { useNavigate } from "react-router";
 
 const MyAccountPage = () => {
+  const navigate = useNavigate()
   const [activeTab, setActiveTab] = useState("profile");
   const [loading, setLoading] = useState(false);
-
+  const [orders, setOrders] = useState([]); // অর্ডারের জন্য স্টেট
+  const [orderLoading, setOrderLoading] = useState(false);
 
   const [userData, setUserData] = useState({
     firstName: "",
@@ -33,12 +34,12 @@ const MyAccountPage = () => {
 
   const [selectedFile, setSelectedFile] = useState(null);
 
-
+  // ১. প্রোফাইল লোড করা
   useEffect(() => {
     const fetchProfile = async () => {
       try {
         const { data } = await axios.get(`${BASE_URL}/auth/profile`, {
-          withCredentials: true, 
+          withCredentials: true,
         });
         if (data.success) {
           const user = data.data;
@@ -63,11 +64,33 @@ const MyAccountPage = () => {
     fetchProfile();
   }, []);
 
+  // ২. অর্ডার হিস্ট্রি ফেচ করা (Pagination সহ)
+  useEffect(() => {
+    if (activeTab === "orders") {
+      const fetchOrders = async () => {
+        setOrderLoading(true);
+        try {
+          const { data } = await axios.get(
+            `${BASE_URL}/getUserOrders?page=1&limit=10`,
+            { withCredentials: true },
+          );
+          if (data.success) {
+            setOrders(data.data);
+          }
+        } catch (err) {
+          toast.error("Failed to load orders");
+        } finally {
+          setOrderLoading(false);
+        }
+      };
+      fetchOrders();
+    }
+  }, [activeTab]);
+
   const handleChange = (e) => {
     setUserData({ ...userData, [e.target.name]: e.target.value });
   };
 
-  // ২. কমন আপডেট ফাংশন (Fix: payload ২য় এবং config ৩য় আর্গুমেন্টে)
   const updateProfileRequest = async (payload) => {
     setLoading(true);
     try {
@@ -76,32 +99,14 @@ const MyAccountPage = () => {
         payload,
         { withCredentials: true },
       );
-
-      if (data.success) {
-        toast.success(data.message);
-     
-      }
+      if (data.success) toast.success(data.message);
     } catch (err) {
-     
-      if (err.response) {
-       
-        console.error("Server Error:", err.response.data);
-        toast.error(err.response.data.message || "Server Error");
-      } else if (err.request) {
-       
-        console.error("Network Error:", err.request);
-        toast.error("Network Error: Server is not responding");
-      } else {
-      
-        console.error("Error:", err.message);
-        toast.error(err.message);
-      }
+      toast.error(err.response?.data?.message || "Update failed");
     } finally {
       setLoading(false);
     }
   };
 
- 
   const handleUserInfoUpdate = (e) => {
     e.preventDefault();
     const formData = new FormData();
@@ -115,7 +120,6 @@ const MyAccountPage = () => {
 
   const handleAddressUpdate = (e) => {
     e.preventDefault();
- 
     updateProfileRequest({
       addressLine: userData.addressLine,
       city: userData.city,
@@ -127,9 +131,8 @@ const MyAccountPage = () => {
 
   const handlePasswordUpdate = (e) => {
     e.preventDefault();
-    if (userData.newPassword !== userData.confirmPassword) {
+    if (userData.newPassword !== userData.confirmPassword)
       return toast.error("New passwords do not match!");
-    }
     updateProfileRequest({
       currentPassword: userData.currentPassword,
       newPassword: userData.newPassword,
@@ -159,9 +162,9 @@ const MyAccountPage = () => {
           </button>
         </div>
 
+        {/* PROFILE TAB CONTENT */}
         {activeTab === "profile" && (
           <div className="space-y-16">
-            {/* User Information */}
             <section>
               <h2 className="text-xl font-bold text-[#1A1A1A] mb-8">
                 User Information
@@ -188,7 +191,7 @@ const MyAccountPage = () => {
               </div>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-8 max-w-4xl">
                 <div className="flex flex-col gap-2">
-                  <label className="text-[11px] font-bold uppercase tracking-wider text-[#333]">
+                  <label className="text-[11px] font-bold uppercase">
                     First name
                   </label>
                   <input
@@ -196,11 +199,11 @@ const MyAccountPage = () => {
                     value={userData.firstName}
                     onChange={handleChange}
                     type="text"
-                    className="border border-[#E5E5E5] p-3 rounded-md focus:outline-none focus:border-gray-400"
+                    className="border border-[#E5E5E5] p-3 rounded-md outline-none"
                   />
                 </div>
                 <div className="flex flex-col gap-2">
-                  <label className="text-[11px] font-bold uppercase tracking-wider text-[#333]">
+                  <label className="text-[11px] font-bold uppercase">
                     Last name
                   </label>
                   <input
@@ -208,11 +211,11 @@ const MyAccountPage = () => {
                     value={userData.lastName}
                     onChange={handleChange}
                     type="text"
-                    className="border border-[#E5E5E5] p-3 rounded-md focus:outline-none focus:border-gray-400"
+                    className="border border-[#E5E5E5] p-3 rounded-md outline-none"
                   />
                 </div>
                 <div className="flex flex-col gap-2">
-                  <label className="text-[11px] font-bold uppercase tracking-wider text-[#333]">
+                  <label className="text-[11px] font-bold uppercase">
                     Email
                   </label>
                   <input
@@ -220,11 +223,11 @@ const MyAccountPage = () => {
                     value={userData.email}
                     onChange={handleChange}
                     type="email"
-                    className="border border-[#E5E5E5] p-3 rounded-md focus:outline-none focus:border-gray-400"
+                    className="border border-[#E5E5E5] p-3 rounded-md outline-none"
                   />
                 </div>
                 <div className="flex flex-col gap-2">
-                  <label className="text-[11px] font-bold uppercase tracking-wider text-[#333]">
+                  <label className="text-[11px] font-bold uppercase">
                     Phone
                   </label>
                   <input
@@ -232,28 +235,27 @@ const MyAccountPage = () => {
                     value={userData.phone}
                     onChange={handleChange}
                     type="text"
-                    className="border border-[#E5E5E5] p-3 rounded-md focus:outline-none focus:border-gray-400"
+                    className="border border-[#E5E5E5] p-3 rounded-md outline-none"
                   />
                 </div>
               </div>
               <button
                 onClick={handleUserInfoUpdate}
                 disabled={loading}
-                className="mt-8 bg-black text-white px-8 py-3 rounded-md font-bold text-[10px] uppercase tracking-widest hover:opacity-90"
+                className="mt-8 bg-black text-white px-8 py-3 rounded-md font-bold text-[10px] uppercase tracking-widest"
               >
                 {loading ? "Updating..." : "Update Profile"}
               </button>
             </section>
 
-            {/* Shipping Address */}
             <section>
               <h2 className="text-xl font-bold text-[#1A1A1A] mb-8">
                 Shipping Address
               </h2>
               <div className="space-y-6 max-w-4xl">
                 <div className="flex flex-col gap-2">
-                  <label className="text-[11px] font-bold uppercase tracking-wider">
-                    Apartment, suite, etc. (optional)
+                  <label className="text-[11px] font-bold uppercase">
+                    Address Line
                   </label>
                   <input
                     name="addressLine"
@@ -265,7 +267,7 @@ const MyAccountPage = () => {
                 </div>
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
                   <div className="flex flex-col gap-2">
-                    <label className="text-[11px] font-bold uppercase tracking-wider">
+                    <label className="text-[11px] font-bold uppercase">
                       City
                     </label>
                     <input
@@ -277,22 +279,19 @@ const MyAccountPage = () => {
                     />
                   </div>
                   <div className="flex flex-col gap-2">
-                    <label className="text-[11px] font-bold uppercase tracking-wider">
-                      State/Province
+                    <label className="text-[11px] font-bold uppercase">
+                      State
                     </label>
-                    <select
+                    <input
                       name="state"
                       value={userData.state}
                       onChange={handleChange}
-                      className="border border-[#E5E5E5] p-3 rounded-md bg-white text-gray-800 outline-none"
-                    >
-                      <option value="">Select</option>
-                      <option value="Dhaka">Dhaka</option>
-                      <option value="Chittagong">Chittagong</option>
-                    </select>
+                      type="text"
+                      className="border border-[#E5E5E5] p-3 rounded-md outline-none"
+                    />
                   </div>
                   <div className="flex flex-col gap-2">
-                    <label className="text-[11px] font-bold uppercase tracking-wider">
+                    <label className="text-[11px] font-bold uppercase">
                       Postal Code
                     </label>
                     <input
@@ -306,15 +305,13 @@ const MyAccountPage = () => {
                 </div>
                 <button
                   onClick={handleAddressUpdate}
-                  disabled={loading}
-                  className="bg-black text-white px-8 py-3 rounded-md font-bold text-[10px] uppercase tracking-widest hover:opacity-90"
+                  className="bg-black text-white px-8 py-3 rounded-md font-bold text-[10px] uppercase tracking-widest"
                 >
-                  {loading ? "Updating..." : "Update Shipping Address"}
+                  Update Address
                 </button>
               </div>
             </section>
 
-            {/* Change Password */}
             <section>
               <h2 className="text-xl font-bold text-[#1A1A1A] mb-8">
                 Change Password
@@ -362,12 +359,82 @@ const MyAccountPage = () => {
               </div>
               <button
                 onClick={handlePasswordUpdate}
-                disabled={loading}
-                className="mt-8 bg-black text-white px-8 py-3 rounded-md font-bold text-[10px] uppercase tracking-widest hover:opacity-90"
+                className="mt-8 bg-black text-white px-8 py-3 rounded-md font-bold text-[10px] uppercase tracking-widest"
               >
-                {loading ? "Updating..." : "Change Password"}
+                Update Password
               </button>
             </section>
+          </div>
+        )}
+
+        {/* ORDER HISTORY TAB CONTENT (Design অনুযায়ী) */}
+        {activeTab === "orders" && (
+          <div className="space-y-6">
+            {orderLoading ? (
+              <p className="text-center py-10">Loading orders...</p>
+            ) : orders.length > 0 ? (
+              orders.map((order) => (
+                <div
+                  key={order._id}
+                  className="border border-gray-100 rounded-lg p-8 bg-white shadow-sm"
+                >
+                  <div className="flex justify-between items-start mb-6">
+                    <div>
+                      <h3 className="text-lg font-bold text-[#1A1A1A]">
+                        Order ORD-{order._id.slice(-5).toUpperCase()}
+                      </h3>
+                      <p className="text-sm text-gray-400 mt-1">
+                        {new Date(order.createdAt).toLocaleDateString("en-US", {
+                          month: "long",
+                          day: "numeric",
+                          year: "numeric",
+                        })}
+                      </p>
+                    </div>
+                    <div className="text-right">
+                      <span
+                        className={`text-[11px] font-bold uppercase px-3 py-1 rounded-full ${order.status === "Delivered" ? "bg-green-50 text-green-600" : "bg-orange-50 text-orange-600"}`}
+                      >
+                        {order.status}
+                      </span>
+                      <p className="text-lg font-bold text-[#1A1A1A] mt-2">
+                        {order.totalAmount}
+                      </p>
+                    </div>
+                  </div>
+
+                  {/* Product List Inside Order */}
+                  <div className="space-y-4 mb-8">
+                    {order.cartItems.map((item, index) => (
+                      <div
+                        key={index}
+                        className="flex justify-between text-sm text-gray-600"
+                      >
+                        <span>
+                          {item.name} x {item.qty}
+                        </span>
+                        <span className="font-medium">
+                          ${item.salePrice.toFixed(2)}
+                        </span>
+                      </div>
+                    ))}
+                  </div>
+                  <button
+                    onClick={() => navigate(`/order-details/${order._id}`)}
+                    className="w-full border border-gray-200 py-3 rounded-md text-[11px] font-bold uppercase tracking-widest hover:bg-black hover:text-white transition-all"
+                  >
+                    View Order Details
+                  </button>
+                  {/* <button className="w-full border border-gray-200 py-3 rounded-md text-[11px] font-bold uppercase tracking-widest hover:bg-black hover:text-white transition-all">
+                    View Order Details
+                  </button> */}
+                </div>
+              ))
+            ) : (
+              <p className="text-center py-10 text-gray-400">
+                No orders found.
+              </p>
+            )}
           </div>
         )}
       </div>

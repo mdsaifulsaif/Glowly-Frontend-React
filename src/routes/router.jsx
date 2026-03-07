@@ -15,6 +15,9 @@ import DashboardOverview from "../dasboardPages/DashboardOverview";
 import ProductPage from "../dasboardPages/ProductPage";
 import OrderPage from "../dasboardPages/OrderPage";
 import NotFound from "../components/NotFound";
+import OrderDetails from "../components/OrderDetails";
+import CategoryPage from "../dasboardPages/CategoryPage";
+import ProtectedRoute from "./ProtectedRoute";
 
 export const router = createBrowserRouter([
   {
@@ -51,7 +54,11 @@ export const router = createBrowserRouter([
       },
       {
         path: "/checkout",
-        element: <CheckoutPage />,
+        element: (
+          <ProtectedRoute>
+            <CheckoutPage />
+          </ProtectedRoute>
+        ),
       },
       {
         path: "/contact",
@@ -59,17 +66,33 @@ export const router = createBrowserRouter([
       },
       {
         path: "/my-account",
-        element: <MyAccountPage />,
+        element: (
+          <ProtectedRoute>
+            <MyAccountPage />
+          </ProtectedRoute>
+        ),
+      },
+      {
+        path: "/order-details/:id",
+        element: <OrderDetails />,
+      },
+      {
+        path: "*",
+        element: <NotFound />,
       },
     ],
   },
   {
     path: "/dashboard",
-    element: <DashboardLayout />,
+    element: (
+      <ProtectedRoute>
+        <DashboardLayout />
+      </ProtectedRoute>
+    ),
     children: [
       {
         index: true,
-        element: <DashboardOverview />
+        element: <DashboardOverview />,
       },
       {
         path: "products",
@@ -77,10 +100,18 @@ export const router = createBrowserRouter([
       },
       {
         path: "orders",
-        element: <OrderPage />,
+        element: (
+          <ProtectedRoute>
+            <OrderPage />
+          </ProtectedRoute>
+        ),
       },
       {
-        path: "*", 
+        path: "category",
+        element: <CategoryPage />,
+      },
+      {
+        path: "*",
         element: <NotFound />,
       },
     ],
