@@ -10,7 +10,9 @@ import CartPage from "../pages/CartPage";
 import CheckoutPage from "../pages/CheckoutPage";
 import ContactUsPage from "../pages/ContactUsPage";
 import MyAccountPage from "../pages/MyAccountPage";
-
+import DashboardLayout from "../layouts/DashboardLayout";
+import DashboardOverview from "../dasboardPages/DashboardOverview";
+import ProductPage from "../dasboardPages/ProductPage";
 
 export const router = createBrowserRouter([
   {
@@ -33,29 +35,47 @@ export const router = createBrowserRouter([
         path: "/login",
         element: <Login />,
       },
-       {
+      {
         path: "/shop",
         element: <Shop />,
       },
-        {
+      {
         path: "/Product/:id",
         element: <ProductDetails />,
       },
-        {
+      {
         path: "/cart",
-        element: <CartPage />
+        element: <CartPage />,
       },
-        {
+      {
         path: "/checkout",
-        element: <CheckoutPage />
+        element: <CheckoutPage />,
       },
-       {
+      {
         path: "/contact",
-        element: <ContactUsPage />
+        element: <ContactUsPage />,
       },
-        {
+      {
         path: "/my-account",
-        element: <MyAccountPage />
+        element: <MyAccountPage />,
+      },
+    ],
+  },
+  {
+    path: "/dashboard",
+    element: <DashboardLayout />,
+    children: [
+      {
+        index: true,
+        element: <DashboardOverview />
+      },
+      {
+        path: "products",
+        element: <ProductPage />,
+      },
+      {
+        path: "orders",
+        element: <div>Orders Page Content</div>,
       },
     ],
   },

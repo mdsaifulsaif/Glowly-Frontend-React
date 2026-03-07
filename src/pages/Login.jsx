@@ -1,13 +1,15 @@
 import React, { useState } from "react";
 import axios from "axios";
 import { IoEyeOutline, IoEyeOffOutline } from "react-icons/io5";
-import { Link } from "react-router";
+import { Link, useNavigate } from "react-router";
 import { BASE_URL } from "../helper/config";
-import { toast } from "react-toastify";
+// import toast from "react-hot-toast";
 import { useAuth } from "../contexts/AuthContext";
+import toast from "react-hot-toast";
 
 const Login = () => {
   const { setUser, loginUser } = useAuth();
+  const navigate = useNavigate();
   const [formData, setFormData] = useState({
     email: "",
     password: "",
@@ -23,8 +25,6 @@ const Login = () => {
     }));
   };
 
- 
-
   const handleSubmit = async (e) => {
     e.preventDefault();
 
@@ -39,6 +39,14 @@ const Login = () => {
 
         // 2️ Toast
         toast.success("Login Successful!");
+
+        if (response.data.data === "admin") {
+        
+          navigate("/dashboard");
+        } else {
+         
+          navigate("/");
+        }
       }
     } catch (error) {
       console.error("Login Error:", error);

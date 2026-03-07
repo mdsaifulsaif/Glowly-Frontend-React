@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import axios from "axios";
 import { Link, Links } from "react-router";
 import { BASE_URL } from "../helper/config";
-import { toast } from "react-toastify";
+import toast from "react-hot-toast";
 
 const Register = () => {
   // Form State

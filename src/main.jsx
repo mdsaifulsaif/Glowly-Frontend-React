@@ -13,9 +13,9 @@ import { AuthProvider } from "./contexts/AuthContext";
 createRoot(document.getElementById("root")).render(
   <StrictMode>
     <AuthProvider>
+      {/* 1. Toaster-কে RouterProvider এর বাইরে এবং উপরে রাখো */}
+      <Toaster position="top-center" reverseOrder={false} />
       <RouterProvider router={router}>
-        {/* ToastContainer-ke ekbare top-e rakho */}
-        <Toaster position="top-center" reverseOrder={false} />
         <ToastContainer position="top-right" autoClose={3000} />
         <RootLayout />
       </RouterProvider>

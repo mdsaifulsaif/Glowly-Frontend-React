@@ -2,7 +2,7 @@
 import React, { createContext, useState, useEffect, useContext } from "react";
 import axios from "axios";
 import { BASE_URL } from "../helper/config";
-import { toast } from "react-toastify";
+import toast from "react-hot-toast";
 import LoadingPage from "../components/Loading";
 
 const AuthContext = createContext();
@@ -43,8 +43,6 @@ export const AuthProvider = ({ children }) => {
     setUser(userData);
   };
 
- 
-
   const logoutUser = async () => {
     try {
       const res = await axios.get(`${BASE_URL}/auth/logout`, {
@@ -77,7 +75,7 @@ export const AuthProvider = ({ children }) => {
         children
       ) : (
         <div className="flex h-screen items-center justify-center text-lg font-medium">
-         <LoadingPage />
+          <LoadingPage />
         </div>
       )}
     </AuthContext.Provider>

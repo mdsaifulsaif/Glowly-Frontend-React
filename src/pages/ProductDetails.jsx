@@ -313,14 +313,14 @@ import { FaStar, FaMinus, FaPlus } from "react-icons/fa";
 import { BASE_URL } from "../helper/config";
 import { useCartStore } from "../store/useCartStore"; // Zustand import
 import { useAuth } from "../contexts/AuthContext";
-import { toast } from "react-toastify";
+import toast from "react-hot-toast";
 
 const ProductDetails = () => {
   const { id } = useParams();
   const addToCart = useCartStore((state) => state.addToCart); // Zustand action
 
   // Mock login check (replace with your auth logic)
-  const {user} = useAuth()
+  const { user } = useAuth();
 
   const [product, setProduct] = useState(null);
   const [reviews, setReviews] = useState([]);
@@ -361,13 +361,17 @@ const ProductDetails = () => {
   const handleReviewSubmit = async (e) => {
     e.preventDefault();
     try {
-      const res = await axios.post(`${BASE_URL}/review/add`, {
-        productId: id,
-        rating,
-        comment,
-      },{
-        withCredentials: true
-      });
+      const res = await axios.post(
+        `${BASE_URL}/review/add`,
+        {
+          productId: id,
+          rating,
+          comment,
+        },
+        {
+          withCredentials: true,
+        },
+      );
       if (res.data.success) {
         alert("Review added!");
         setComment("");
@@ -455,7 +459,7 @@ const ProductDetails = () => {
               <button
                 onClick={() => {
                   addToCart(product, quantity);
-                //   toast.success("Added to cart!");
+                  //   toast.success("Added to cart!");
                 }}
                 className="flex-1 bg-black text-white py-4 rounded-full font-bold uppercase tracking-widest hover:bg-zinc-800 transition-all"
               >

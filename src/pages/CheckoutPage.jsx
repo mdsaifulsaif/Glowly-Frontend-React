@@ -3,7 +3,7 @@ import { useCartStore } from "../store/useCartStore";
 import axios from "axios";
 import { BASE_URL } from "../helper/config";
 import { useNavigate } from "react-router";
-import { toast } from "react-toastify";
+import toast from "react-hot-toast";
 
 const CheckoutPage = () => {
   const { cart, clearCart } = useCartStore();

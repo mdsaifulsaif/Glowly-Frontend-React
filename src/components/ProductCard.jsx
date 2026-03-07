@@ -65,7 +65,7 @@ export default ProductCard;
 // import { IoBagHandleOutline } from "react-icons/io5";
 // import { Link } from "react-router";
 // import { useCartStore } from "../store/useCartStore";
-// // import { toast } from "react-toastify";
+// // import toast from "react-hot-toast";
 // import toast from "react-hot-toast";
 
 // const ProductCard = ({ product }) => {

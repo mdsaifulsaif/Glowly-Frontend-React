@@ -6,7 +6,7 @@ import { Link } from "react-router";
 const CartPage = () => {
   const { cart, addToCart, removeFromCart } = useCartStore();
 
-  // সাবটোটাল ক্যালকুলেশন
+  // calculaton
   const subtotal = cart.reduce(
     (acc, item) => acc + item.salePrice * item.quantity,
     0,

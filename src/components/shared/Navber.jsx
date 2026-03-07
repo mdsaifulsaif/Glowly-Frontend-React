@@ -568,6 +568,14 @@ const Navbar = () => {
                   >
                     My Account
                   </Link>
+                  {user.role === "admin" && (
+                    <Link
+                      to="/dashboard"
+                      className="block px-4 py-2 hover:bg-gray-50"
+                    >
+                      Dashboard
+                    </Link>
+                  )}
                   <button
                     onClick={logoutUser}
                     className="w-full text-left px-4 py-2 text-red-500 hover:bg-red-50"
