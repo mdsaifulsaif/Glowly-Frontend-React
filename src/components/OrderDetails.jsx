@@ -3,6 +3,7 @@ import { IoArrowBackOutline } from "react-icons/io5";
 import { useParams, useNavigate } from "react-router";
 import axios from "axios";
 import { BASE_URL } from "../helper/config";
+import LoadingPage from "./Loading";
 
 const OrderDetails = () => {
   const { id } = useParams();
@@ -27,7 +28,7 @@ const OrderDetails = () => {
     fetchOrderDetails();
   }, [id]);
 
-  if (loading) return <div className="py-20 text-center">Loading...</div>;
+  if (loading) return <LoadingPage />
   if (!order) return <div className="py-20 text-center">Order not found.</div>;
 
   return (

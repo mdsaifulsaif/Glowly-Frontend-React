@@ -25,6 +25,35 @@ const Login = () => {
     }));
   };
 
+  // const handleSubmit = async (e) => {
+  //   e.preventDefault();
+
+  //   try {
+  //     const response = await axios.post(`${BASE_URL}/auth/login`, formData, {
+  //       withCredentials: true,
+  //     });
+
+  //     if (response.data.success) {
+  //       // 1️ Update context
+  //       loginUser(response.data.data);
+
+  //       // 2️ Toast
+  //       toast.success("Login Successful!");
+
+  //       if (response.data.data === "admin") {
+
+  //         navigate("/dashboard");
+  //       } else {
+
+  //         navigate("/");
+  //       }
+  //     }
+  //   } catch (error) {
+  //     console.error("Login Error:", error);
+  //     toast.error(error.response?.data?.message || error.message);
+  //   }
+  // };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
 
@@ -34,17 +63,18 @@ const Login = () => {
       });
 
       if (response.data.success) {
-        // 1️ Update context
-        loginUser(response.data.data);
+        const userData = response.data.data;
 
-        // 2️ Toast
+        // 1. Update context
+        loginUser(userData);
+
+        // 2. Toast
         toast.success("Login Successful!");
 
-        if (response.data.data === "admin") {
-        
+     
+        if (userData.role === "admin") {
           navigate("/dashboard");
         } else {
-         
           navigate("/");
         }
       }
@@ -53,7 +83,6 @@ const Login = () => {
       toast.error(error.response?.data?.message || error.message);
     }
   };
-
   return (
     <div className="min-h-screen bg-[#F9E4CB] flex flex-col items-center justify-center py-12 px-4 font-raleway">
       <div className="global-container max-w-[500px]">

@@ -7,6 +7,7 @@ import { useCartStore } from "../store/useCartStore";
 import { useAuth } from "../contexts/AuthContext";
 import toast from "react-hot-toast";
 import Handpicked from "../components/Handpicked";
+import LoadingPage from "../components/Loading";
 
 const ProductDetails = () => {
   const { id } = useParams();
@@ -69,9 +70,7 @@ const ProductDetails = () => {
 
   if (loading || !product)
     return (
-      <div className="h-screen flex justify-center items-center font-bold">
-        Loading...
-      </div>
+     <LoadingPage />
     );
 
   return (

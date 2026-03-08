@@ -8,12 +8,13 @@ import axios from "axios";
 import toast from "react-hot-toast";
 import { BASE_URL } from "../helper/config";
 import { useNavigate } from "react-router";
+import LoadingPage from "../components/Loading";
 
 const MyAccountPage = () => {
   const navigate = useNavigate()
   const [activeTab, setActiveTab] = useState("profile");
   const [loading, setLoading] = useState(false);
-  const [orders, setOrders] = useState([]); // অর্ডারের জন্য স্টেট
+  const [orders, setOrders] = useState([]); 
   const [orderLoading, setOrderLoading] = useState(false);
 
   const [userData, setUserData] = useState({
@@ -64,7 +65,7 @@ const MyAccountPage = () => {
     fetchProfile();
   }, []);
 
-  // ২. অর্ডার হিস্ট্রি ফেচ করা (Pagination সহ)
+  
   useEffect(() => {
     if (activeTab === "orders") {
       const fetchOrders = async () => {
@@ -371,7 +372,7 @@ const MyAccountPage = () => {
         {activeTab === "orders" && (
           <div className="space-y-6">
             {orderLoading ? (
-              <p className="text-center py-10">Loading orders...</p>
+              <LoadingPage />
             ) : orders.length > 0 ? (
               orders.map((order) => (
                 <div
