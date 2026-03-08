@@ -375,10 +375,11 @@ const Navbar = () => {
         </AnimatePresence>
 
         {/* --- Mobile Sidebar (Drawer) --- */}
+        {/* --- Mobile Sidebar (Drawer) --- */}
         <AnimatePresence>
           {isMobileMenuOpen && (
             <>
-              {/* Sidebar Background Overlay */}
+              {/* Sidebar Background Overlay - ekhne 'fixed inset-0' thaka khub joruri */}
               <motion.div
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
@@ -392,71 +393,79 @@ const Navbar = () => {
                 animate={{ x: 0 }}
                 exit={{ x: "-100%" }}
                 transition={{ type: "tween", duration: 0.3 }}
-                className="fixed top-0 left-0 w-[280px] h-full bg-white z-[160] shadow-2xl p-6 overflow-y-auto"
+                /* 'fixed top-0 left-0 h-screen' ensure korbe sidebar shob somoy screen-er top theke shuru hobe */
+                className="fixed top-0 left-0 w-[280px] h-screen bg-white z-[160] shadow-2xl flex flex-col overflow-hidden"
               >
-                <div className="flex justify-between items-center mb-10">
+                {/* Header Section (Static) */}
+                <div className="flex justify-between items-center p-6 border-b border-gray-50">
                   <img
                     src="/assets/logo.png"
                     alt="Logo"
                     style={{ width: "70px" }}
                   />
                   <button onClick={() => setIsMobileMenuOpen(false)}>
-                    <IoCloseOutline className="text-2xl text-gray-500" />
+                    <IoCloseOutline className="text-2xl text-gray-500 hover:text-black" />
                   </button>
                 </div>
 
-                <ul className="flex flex-col gap-6">
-                  {menuItems.map((item) => (
-                    <li
-                      key={item.name}
-                      className="border-b border-gray-50 pb-4"
-                    >
-                      <div className="flex justify-between items-center">
-                        <Link
-                          to={item.path}
-                          onClick={() => setIsMobileMenuOpen(false)}
-                          className="uppercase tracking-widest text-[12px] font-semibold text-gray-800"
-                        >
-                          {item.name}
-                        </Link>
-                        {item.sub.length > 0 && (
-                          <span
-                            className="text-gray-400 text-lg p-2 cursor-pointer"
-                            onClick={() =>
-                              setActiveDropdown(
-                                activeDropdown === item.name ? null : item.name,
-                              )
-                            }
+                {/* Links Section (Scrollable) */}
+                <div className="flex-1 overflow-y-auto p-6 custom-scrollbar">
+                  <ul className="flex flex-col gap-6">
+                    {menuItems.map((item) => (
+                      <li
+                        key={item.name}
+                        className="border-b border-gray-50 pb-4"
+                      >
+                        <div className="flex justify-between items-center">
+                          <Link
+                            to={item.path}
+                            onClick={() => setIsMobileMenuOpen(false)}
+                            className="uppercase tracking-widest text-[12px] font-semibold text-gray-800"
                           >
-                            {activeDropdown === item.name ? "−" : "+"}
-                          </span>
-                        )}
-                      </div>
-                      <AnimatePresence>
-                        {activeDropdown === item.name &&
-                          item.sub.length > 0 && (
-                            <motion.div
-                              initial={{ height: 0, opacity: 0 }}
-                              animate={{ height: "auto", opacity: 1 }}
-                              exit={{ height: 0, opacity: 0 }}
-                              className="overflow-hidden flex flex-col gap-3 mt-4 ml-4"
+                            {item.name}
+                          </Link>
+                          {item.sub.length > 0 && (
+                            <span
+                              className="text-gray-400 text-lg p-2 cursor-pointer"
+                              onClick={() =>
+                                setActiveDropdown(
+                                  activeDropdown === item.name
+                                    ? null
+                                    : item.name,
+                                )
+                              }
                             >
-                              {item.sub.map((sub) => (
-                                <Link
-                                  key={sub}
-                                  to={`/category/${sub.toLowerCase()}`}
-                                  className="text-xs text-gray-500 hover:text-black"
-                                  onClick={() => setIsMobileMenuOpen(false)}
-                                >
-                                  {sub}
-                                </Link>
-                              ))}
-                            </motion.div>
+                              {activeDropdown === item.name ? "−" : "+"}
+                            </span>
                           )}
-                      </AnimatePresence>
-                    </li>
-                  ))}
-                </ul>
+                        </div>
+
+                        <AnimatePresence>
+                          {activeDropdown === item.name &&
+                            item.sub.length > 0 && (
+                              <motion.div
+                                initial={{ height: 0, opacity: 0 }}
+                                animate={{ height: "auto", opacity: 1 }}
+                                exit={{ height: 0, opacity: 0 }}
+                                className="overflow-hidden flex flex-col gap-3 mt-4 ml-4"
+                              >
+                                {item.sub.map((sub) => (
+                                  <Link
+                                    key={sub}
+                                    to={`/category/${sub.toLowerCase()}`}
+                                    className="text-xs text-gray-500 hover:text-black"
+                                    onClick={() => setIsMobileMenuOpen(false)}
+                                  >
+                                    {sub}
+                                  </Link>
+                                ))}
+                              </motion.div>
+                            )}
+                        </AnimatePresence>
+                      </li>
+                    ))}
+                  </ul>
+                </div>
               </motion.div>
             </>
           )}
