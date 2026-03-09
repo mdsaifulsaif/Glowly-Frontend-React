@@ -45,7 +45,7 @@ export const AuthProvider = ({ children }) => {
 
   const logoutUser = async () => {
     try {
-      const res = await axios.get(`${BASE_URL}/auth/logout`, {
+      const res = await axios.post(`${BASE_URL}/auth/logout`, {
         withCredentials: true,
       });
 
@@ -60,8 +60,7 @@ export const AuthProvider = ({ children }) => {
     }
   };
 
-  return (
-    <AuthContext.Provider
+  return ( <AuthContext.Provider
       value={{
         user,
         setUser,
